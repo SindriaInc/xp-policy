@@ -18,36 +18,28 @@ services:
         aliases:
           - "${APP_NAME}.local"
     #networks:
-    #  vpc_xdev:
+    #  vpc_app_name:
     #    ipv4_address: "${APP_IP_ADDRESS}"
     #    aliases:
     #      - "${APP_NAME}.local"
-
   # =db
   db:
-    image: "sindriainc/mariadb:${MARIADB_TAG}-${MARIADB_VERSION}"
+    image: "postgres:11"
     container_name: "${APP_NAME}-db"
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${DB_DATABASE}
-      - MYSQL_USER=${DB_USERNAME}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PASSWORD=${APP_DB_ROOT_PASSWORD}
+      - POSTGRES_DB=${APP_DB_DATABASE}
+      - POSTGRES_USER=${APP_DB_USERNAME}
     volumes:
-      #- "${APP_DATA_PATH}/db/:/var/lib/mysql:delegated"
-      - "/var/lib/mysql"
+      - "db:/var/lib/postgresql/data"
     hostname: "${APP_NAME}-db.local"
     #ports:
-    #  - "3306:3306"
+    #  - "5432:5432"
     networks:
       default:
-        ipv4_address: "${DB_IP_ADDRESS}"
+        ipv4_address: "${APP_DB_IP_ADDRESS}"
         aliases:
           - "${APP_NAME}-db.local"
-    #networks:
-    #  vpc_xdev:
-    #    ipv4_address: "${DB_IP_ADDRESS}"
-    #    aliases:
-    #      - "${APP_NAME}-db.local"
 
 # =networks
 networks:
@@ -60,5 +52,9 @@ networks:
 
 # =networks
 #networks:
-#  vpc_xdev:
+#  vpc_app_name:
 #    external: true
+
+# =volumes
+volumes:
+  db:
